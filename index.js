@@ -1,13 +1,6 @@
-require('dotenv').config() // init dotenv
-
 const _ = require('lodash')
 const Line = require('@line/bot-sdk').Client
 const JSON5 = require('json5')
-
-const line = new Line({
-  channelAccessToken: _.get(process, ['env', 'CHANNEL_ACCESS_TOKEN']),
-  channelSecret: _.get(process, ['env', 'CHANNEL_SECRET']),
-})
 
 const jsonToString = json => {
   let str = JSON.stringify(json, null, 2)
@@ -52,32 +45,37 @@ const messageText = text => {
  */
 exports.main = async (req, res) => {
   try {
+    // get access token
+    const channelAccessToken = req.path.substring(1)
+    if (!/^[a-zA-Z0-9+/=]+$/.test(channelAccessToken)) throw new Error('wrong channel access token')
+    const line = new Line({ channelAccessToken })
+
     const events = _.get(req, 'body.events', [])
     await Promise.all(_.map(events, async event => {
+      if (_.get(event, 'source.userId') === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return // webhook verify
       let messages
       try {
-        if (_.get(event, 'message.type') === 'text') { // 如果是 JSON 就嘗試回傳
-          try {
-            messages = JSON5.parse(_.get(event, 'message.text'))
-            // 判斷要不要幫忙補外層的 flex (從 FLEX MESSAGE SIMULATOR 來的通常有這問題)
-            if (_.includes(['bubble', 'carousel'], _.get(messages, 'type'))) {
-              messages = {
-                type: 'flex',
-                altText: '沒有替代文字',
-                contents: messages
-              }
-            }
-          } catch (err) {
-            console.log(errToString(err))
+        try { // 如果是 JSON 就嘗試回傳
+          const tmp = JSON5.parse(_.get(event, 'message.text'))
+          if (!_.isArray(tmp) && !_.isPlainObject(tmp)) throw new Error('text is not array or object')
+
+          // 判斷要不要幫忙補外層的 flex (從 FLEX MESSAGE SIMULATOR 來的通常有這問題)
+          const isPartialFlex = _.includes(['bubble', 'carousel'], _.get(tmp, 'type'))
+          messages = !isPartialFlex ? tmp : {
+            type: 'flex',
+            altText: '沒有替代文字',
+            contents: tmp
           }
-        }
-        if (!messages) { // 其他類型就直接把 event 轉成 JSON
-          messages = messageText(jsonToString(event))
+        } catch (err) {
+          messages = messageText(jsonToString(event)) // 無法解析成物件就直接把 event 轉成 JSON
         }
         console.log(JSON.stringify({ event, messages }))
         await line.replyMessage(event.replyToken, messages)
       } catch (err) {
         console.log(errToString(err))
+        try {
+          await line.replyMessage(event.replyToken, messageText(errToString(err)))
+        } catch (err) {}
       }
     }))
     res.status(200).send('OK')
