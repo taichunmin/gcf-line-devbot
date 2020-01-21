@@ -16,6 +16,7 @@ const errToString = err => {
     'code',
     'message',
     'name',
+    'originalError.response.data',
     'raw',
     'stack',
     'status',
