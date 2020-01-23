@@ -82,5 +82,6 @@ exports.main = async (req, res) => {
     res.status(200).send('OK')
   } catch (err) {
     console.log(errToString(err))
+    res.status(err.status || 500).send(err.message)
   }
 }
