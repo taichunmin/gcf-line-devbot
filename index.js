@@ -70,10 +70,11 @@ exports.main = async (req, res) => {
         } catch (err) {
           messages = messageText(jsonToString(event)) // 無法解析成物件就直接把 event 轉成 JSON
         }
-        console.log(JSON.stringify({ event, messages }))
+        console.log('event =', JSON.stringify(event))
+        console.log('messages =', JSON.stringify(messages))
         await line.replyMessage(event.replyToken, messages)
       } catch (err) {
-        console.log(errToString(err))
+        console.log('event error =', errToString(err))
         try {
           await line.replyMessage(event.replyToken, messageText(errToString(err)))
         } catch (err) {}
@@ -81,7 +82,7 @@ exports.main = async (req, res) => {
     }))
     res.status(200).send('OK')
   } catch (err) {
-    console.log(errToString(err))
+    console.log('error =', errToString(err))
     res.status(err.status || 500).send(err.message)
   }
 }
