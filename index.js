@@ -53,6 +53,7 @@ exports.main = async (req, res) => {
 
     const events = _.get(req, 'body.events', [])
     await Promise.all(_.map(events, async event => {
+      if (!event.replyToken) return // unfollow
       if (_.get(event, 'source.userId') === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return // webhook verify
       let messages
       try {
