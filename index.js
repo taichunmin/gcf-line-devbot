@@ -2,41 +2,47 @@ const _ = require('lodash')
 const Line = require('@line/bot-sdk').Client
 const JSON5 = require('json5')
 
+const TEXT_MAXLEN = 5000
+
 const jsonToString = json => {
   let str = JSON.stringify(json, null, 2)
-  if (str.length > 2000) str = JSON.stringify(json, null, 1)
-  if (str.length > 2000) str = JSON.stringify(json)
+  if (str.length > TEXT_MAXLEN) str = JSON.stringify(json, null, 1)
+  if (str.length > TEXT_MAXLEN) str = JSON.stringify(json)
   return str
 }
 
-const errToString = err => {
-  const debug = {}
-  _.each([
-    'args',
+const errToJson = (() => {
+  const ERROR_KEYS = [
+    'address',
     'code',
+    'data',
+    'dest',
+    'errno',
+    'info',
     'message',
     'name',
     'originalError.response.data',
-    'raw',
+    'path',
+    'port',
+    'reason',
+    'response.data',
+    'response.headers',
+    'response.status',
     'stack',
     'status',
     'statusCode',
     'statusMessage',
-  ], key => {
-    if (_.hasIn(err, key)) _.set(debug, key, _.get(err, key))
-  })
-  return JSON.stringify(debug)
-}
+    'syscall',
+  ]
+  return err => _.transform(ERROR_KEYS, (json, k) => {
+    if (_.hasIn(err, k)) _.set(json, k, _.get(err, k))
+  }, {})
+})()
 
-const messageText = text => {
-  text = _.truncate(_.toString(text), {
-    length: 2000
-  })
-  return {
-    type: 'text',
-    text
-  }
-}
+const messageText = text => ({
+  type: 'text',
+  text: _.truncate(_.toString(text), { length: TEXT_MAXLEN })
+})
 
 /**
  * Responds to any HTTP request.
@@ -57,6 +63,7 @@ exports.main = async (req, res) => {
       if (_.get(event, 'source.userId') === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return // webhook verify
       let messages
       try {
+        console.log('event =', JSON.stringify(event))
         try { // 如果是 JSON 就嘗試回傳
           const tmp = JSON5.parse(_.get(event, 'message.text'))
           if (!_.isArray(tmp) && !_.isPlainObject(tmp)) throw new Error('text is not array or object')
@@ -68,22 +75,22 @@ exports.main = async (req, res) => {
             altText: '沒有替代文字',
             contents: tmp
           }
+          console.log('messages =', JSON.stringify(messages))
         } catch (err) {
           messages = messageText(jsonToString(event)) // 無法解析成物件就直接把 event 轉成 JSON
         }
-        console.log('event =', JSON.stringify(event))
-        console.log('messages =', JSON.stringify(messages))
         await line.replyMessage(event.replyToken, messages)
       } catch (err) {
-        console.log('event error =', errToString(err))
         try {
-          await line.replyMessage(event.replyToken, messageText(errToString(err)))
-        } catch (err) {}
+          await line.replyMessage(event.replyToken, messageText(jsonToString(errToJson(err))))
+        } catch (err) {
+          console.log('reply error =', jsonToString(errToJson(err)))
+        }
       }
     }))
     res.status(200).send('OK')
   } catch (err) {
-    console.log('error =', errToString(err))
+    console.log('error =', jsonToString(errToJson(err)))
     res.status(err.status || 500).send(err.message)
   }
 }
