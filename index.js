@@ -44,6 +44,95 @@ const messageText = text => ({
   text: _.truncate(_.toString(text), { length: TEXT_MAXLEN })
 })
 
+const flexLineApiError = data => ({
+  type: 'flex',
+  altText: data.message || '訊息物件有誤',
+  contents: {
+    size: 'giga',
+    type: 'bubble',
+    body: {
+      layout: 'vertical',
+      spacing: 'md',
+      type: 'box',
+      contents: _.map(data.details, detail => ({
+        layout: 'horizontal',
+        spacing: 'md',
+        type: 'box',
+        contents: [
+          {
+            height: '40px',
+            layout: 'vertical',
+            type: 'box',
+            width: '40px',
+            contents: [
+              {
+                aspectMode: 'cover',
+                aspectRatio: '1:1',
+                size: 'full',
+                type: 'image',
+                url: 'https://i.imgur.com/2VH5JeS.png'
+              }
+            ]
+          },
+          {
+            layout: 'vertical',
+            spacing: 'xs',
+            type: 'box',
+            contents: [
+              {
+                color: '#666666',
+                flex: 0,
+                size: 'xxs',
+                text: detail.property,
+                type: 'text',
+                wrap: true
+              },
+              {
+                flex: 1,
+                layout: 'vertical',
+                type: 'box',
+                contents: [
+                  {
+                    type: 'filler'
+                  }
+                ]
+              },
+              {
+                flex: 0,
+                size: 'sm',
+                text: detail.message,
+                type: 'text',
+                wrap: true
+              }
+            ]
+          }
+        ]
+      })),
+    },
+    header: {
+      backgroundColor: '#00C300',
+      layout: 'vertical',
+      spacing: 'sm',
+      type: 'box',
+      contents: [
+        {
+          color: '#99ff99',
+          size: 'xxs',
+          text: '訊息物件有誤',
+          type: 'text',
+          weight: 'bold'
+        },
+        {
+          color: '#ffffff',
+          text: data.message || '訊息物件有誤',
+          type: 'text',
+          wrap: true
+        }
+      ]
+    }
+  }
+})
+
 /**
  * Responds to any HTTP request.
  *
@@ -59,11 +148,11 @@ exports.main = async (req, res) => {
 
     const events = _.get(req, 'body.events', [])
     await Promise.all(_.map(events, async event => {
+      console.log('event =', JSON.stringify(event))
       if (!event.replyToken) return // unfollow
       if (_.get(event, 'source.userId') === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return // webhook verify
       let messages
       try {
-        console.log('event =', JSON.stringify(event))
         try { // 如果是 JSON 就嘗試回傳
           const tmp = JSON5.parse(_.get(event, 'message.text'))
           if (!_.isArray(tmp) && !_.isPlainObject(tmp)) throw new Error('text is not array or object')
@@ -82,6 +171,8 @@ exports.main = async (req, res) => {
         await line.replyMessage(event.replyToken, messages)
       } catch (err) {
         try {
+          const lineApiErrData = _.get(err, 'originalError.response.data')
+          if (lineApiErrData) return await line.replyMessage(event.replyToken, flexLineApiError(lineApiErrData))
           await line.replyMessage(event.replyToken, messageText(jsonToString(errToJson(err))))
         } catch (err) {
           console.log('reply error =', jsonToString(errToJson(err)))
