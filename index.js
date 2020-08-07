@@ -175,13 +175,13 @@ exports.main = async (req, res) => {
           if (lineApiErrData) return await line.replyMessage(event.replyToken, flexLineApiError(lineApiErrData))
           await line.replyMessage(event.replyToken, messageText(jsonToString(errToJson(err))))
         } catch (err) {
-          console.log('reply error =', jsonToString(errToJson(err)))
+          console.log('reply error =', JSON.stringify(errToJson(err)))
         }
       }
     }))
     res.status(200).send('OK')
   } catch (err) {
-    console.log('error =', jsonToString(errToJson(err)))
+    console.log('error =', JSON.stringify(errToJson(err)))
     res.status(err.status || 500).send(err.message)
   }
 }
