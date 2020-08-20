@@ -170,18 +170,19 @@ exports.main = async (req, res) => {
         }
         await line.replyMessage(event.replyToken, messages)
       } catch (err) {
+        console.log('error1 =', JSON.stringify(errToJson(err)))
         try {
           const lineApiErrData = _.get(err, 'originalError.response.data')
-          if (lineApiErrData) return await line.replyMessage(event.replyToken, flexLineApiError(lineApiErrData))
-          await line.replyMessage(event.replyToken, messageText(jsonToString(errToJson(err))))
+          messages = lineApiErrData ? flexLineApiError(lineApiErrData) : messageText(jsonToString(errToJson(err)))
+          await line.replyMessage(event.replyToken, messages)
         } catch (err) {
-          console.log('reply error =', JSON.stringify(errToJson(err)))
+          console.log('error2 =', JSON.stringify(errToJson(err)))
         }
       }
     }))
     res.status(200).send('OK')
   } catch (err) {
-    console.log('error =', JSON.stringify(errToJson(err)))
+    console.log('error3 =', JSON.stringify(errToJson(err)))
     res.status(err.status || 500).send(err.message)
   }
 }
