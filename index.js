@@ -41,7 +41,7 @@ const errToJson = (() => {
 
 const messageText = text => ({
   type: 'text',
-  text: _.truncate(_.toString(text), { length: TEXT_MAXLEN })
+  text: _.truncate(_.toString(text), { length: TEXT_MAXLEN }),
 })
 
 const flexLineApiError = data => ({
@@ -70,9 +70,9 @@ const flexLineApiError = data => ({
                 aspectRatio: '1:1',
                 size: 'full',
                 type: 'image',
-                url: 'https://i.imgur.com/2VH5JeS.png'
-              }
-            ]
+                url: 'https://i.imgur.com/2VH5JeS.png',
+              },
+            ],
           },
           {
             layout: 'vertical',
@@ -85,7 +85,7 @@ const flexLineApiError = data => ({
                 size: 'xxs',
                 text: detail.property,
                 type: 'text',
-                wrap: true
+                wrap: true,
               },
               {
                 flex: 1,
@@ -93,20 +93,20 @@ const flexLineApiError = data => ({
                 type: 'box',
                 contents: [
                   {
-                    type: 'filler'
-                  }
-                ]
+                    type: 'filler',
+                  },
+                ],
               },
               {
                 flex: 0,
                 size: 'sm',
                 text: detail.message,
                 type: 'text',
-                wrap: true
-              }
-            ]
-          }
-        ]
+                wrap: true,
+              },
+            ],
+          },
+        ],
       })),
     },
     header: {
@@ -120,17 +120,17 @@ const flexLineApiError = data => ({
           size: 'xxs',
           text: '訊息物件有誤',
           type: 'text',
-          weight: 'bold'
+          weight: 'bold',
         },
         {
           color: '#ffffff',
           text: data.message || '訊息物件有誤',
           type: 'text',
-          wrap: true
-        }
-      ]
-    }
-  }
+          wrap: true,
+        },
+      ],
+    },
+  },
 })
 
 /**
@@ -160,9 +160,9 @@ exports.main = async (req, res) => {
           // 判斷要不要幫忙補外層的 flex (從 FLEX MESSAGE SIMULATOR 來的通常有這問題)
           const isPartialFlex = _.includes(['bubble', 'carousel'], _.get(tmp, 'type'))
           messages = !isPartialFlex ? tmp : {
-            type: 'flex',
             altText: '沒有替代文字',
-            contents: tmp
+            contents: tmp,
+            type: 'flex',
           }
           console.log('messages =', JSON.stringify(messages))
         } catch (err) {

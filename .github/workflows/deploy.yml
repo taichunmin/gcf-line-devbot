@@ -1,0 +1,23 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: 設定 gcloud
+      uses: GoogleCloudPlatform/github-actions@master
+      with:
+        project_id: ${{ secrets.GCP_PROJECT }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+    - name: 建立正式站環境變數檔案
+      run: echo "$ENV_PROD" > .env.yaml
+      env:
+        ENV_PROD: ${{ secrets.ENV_PROD }}
+    - name: 部署到 Google Cloud Functions
+      run: yarn deploy
