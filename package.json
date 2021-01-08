@@ -12,14 +12,17 @@
     "lodash": "^4.17.20"
   },
   "devDependencies": {
+    "@google-cloud/functions-framework": "^1.7.1",
     "eslint": "^7.16.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1"
+    "eslint-plugin-promise": "^4.2.1",
+    "jest": "^26.6.3"
   },
   "scripts": {
-    "lint": "eslint --ext .js --fix .",
-    "deploy": "gcloud functions deploy gcf-line-devbot --region=us-central1 --allow-unauthenticated --entry-point=main --memory=128MB --runtime=nodejs12 --timeout=60s --env-vars-file=.env.yaml --max-instances=1 --trigger-http"
+    "deploy": "gcloud functions deploy gcf-line-devbot --region=us-central1 --allow-unauthenticated --entry-point=main --memory=128MB --runtime=nodejs12 --timeout=60s --env-vars-file=.env.yaml --max-instances=1 --trigger-http",
+    "start": "functions-framework --port=3000 --target=main --signature-type=http",
+    "lint": "eslint --ext .js --fix ."
   }
 }
