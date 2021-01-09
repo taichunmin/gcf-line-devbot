@@ -4,6 +4,7 @@ const { middlewareCompose } = require('../../libs/helper')
 const middleware = []
 
 middleware.push(require('./init-event')) // 紀錄事件、過濾測試事件、輔助函式、錯誤處理
+middleware.push(require('./cmd')) // 處理指令
 middleware.push(require('./reply-flex-from-text')) // 嘗試回傳 flex
 middleware.push(require('./reply-event-json')) // 把事件用 json 回傳
 

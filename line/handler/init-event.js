@@ -20,7 +20,7 @@ module.exports = async (ctx, next) => {
     await next() // 繼續執行其他 middleware
   } catch (err) {
     try { // 如果還可以 reply 就嘗試把訊息往回傳
-      if (!ctx.replyed) await ctx.replyMessage(msgJsonStringify(errToPlainObj(err)))
+      if (!ctx.replyed) await ctx.replyMessage(msgJsonStringify(_.omit(errToPlainObj(err), ['stack'])))
     } catch (err) {}
 
     // 避免錯誤拋到外層
