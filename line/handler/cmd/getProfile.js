@@ -2,7 +2,8 @@ const _ = require('lodash')
 const msgJsonStringify = require('../../msg/json-stringify')
 
 module.exports = async (ctx, next) => {
-  const userId = _.get(ctx, 'cmdArg.0') || _.get(ctx, 'event.source.userId')
-  if (!userId) throw new Error('缺少必要參數 userId')
-  await ctx.replyMessage(msgJsonStringify(await ctx.line.getProfile(userId)))
+  const userIds = ctx.mentionUserIds || _.castArray(ctx.userId)
+  if (!userIds.length) throw new Error('缺少必要參數 userId')
+  const promises = _.map(userIds, userId => ctx.line.getProfile(userId).catch(err => err.message))
+  await ctx.replyMessage(msgJsonStringify(await Promise.all(promises)))
 }

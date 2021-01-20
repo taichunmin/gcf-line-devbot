@@ -2,9 +2,9 @@ const _ = require('lodash')
 const msgJsonStringify = require('../../msg/json-stringify')
 
 module.exports = async (ctx, next) => {
-  const roomId = _.get(ctx, 'cmdArg.0') || _.get(ctx, 'event.source.roomId')
-  if (!roomId) throw new Error('缺少必要參數 roomId')
-  const userId = _.get(ctx, 'cmdArg.1') || _.get(ctx, 'event.source.userId')
-  if (!userId) throw new Error('缺少必要參數 userId')
-  await ctx.replyMessage(msgJsonStringify(await ctx.line.getGroupMemberProfile(roomId, userId)))
+  if (!ctx.roomId) throw new Error('缺少必要參數 roomId')
+  const userIds = ctx.mentionUserIds || _.castArray(ctx.userId)
+  if (!userIds.length) throw new Error('缺少必要參數 userId')
+  const promises = _.map(userIds, userId => ctx.line.getRoomMemberProfile(ctx.roomId, userId).catch(err => err.message))
+  await ctx.replyMessage(msgJsonStringify(await Promise.all(promises)))
 }
