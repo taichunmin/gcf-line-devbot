@@ -1,11 +1,21 @@
-name: Deploy
+name: Node.js CI
 
-on:
-  push:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 安裝相依性套件
+        run: yarn
+      - name: 程式碼風格檢查
+        run: yarn lint
+      - name: 單元測試
+        run: yarn test
   deploy:
+    if: github.ref == 'refs/heads/master'
+    needs: test
     runs-on: ubuntu-latest
 
     steps:

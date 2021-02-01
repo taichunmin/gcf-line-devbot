@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { getGcfLogger } = require('./libs/helper')
+const { log } = require('./libs/helper')
 const Line = require('@line/bot-sdk').Client
 const lineHandler = require('./line/handler')
 
@@ -10,7 +10,6 @@ const lineHandler = require('./line/handler')
  * @param {!express:Response} res HTTP response context.
  */
 exports.main = async (req, res) => {
-  const logger = getGcfLogger(req)
   try {
     // 處理 access token
     const channelAccessToken = req.path.substring(1)
@@ -19,10 +18,10 @@ exports.main = async (req, res) => {
 
     // 處理 events
     const events = _.get(req, 'body.events', [])
-    await Promise.all(_.map(events, event => lineHandler({ req, event, line, logger })))
+    await Promise.all(_.map(events, event => lineHandler({ req, event, line })))
     res.status(200).send('OK')
   } catch (err) {
-    logger.error(err)
+    log('ERROR', err)
     res.status(err.status || 500).send(err.message)
   }
 }

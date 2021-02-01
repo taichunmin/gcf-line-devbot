@@ -23,7 +23,8 @@
   },
   "scripts": {
     "deploy": "gcloud functions deploy gcf-line-devbot --region=us-central1 --allow-unauthenticated --entry-point=main --memory=128MB --runtime=nodejs12 --timeout=60s --max-instances=1 --trigger-http --env-vars-file=.env.yaml",
+    "lint": "eslint --ext .js --fix .",
     "start": "functions-framework --port=3000 --target=main --signature-type=http",
-    "lint": "eslint --ext .js --fix ."
+    "test": "jest"
   }
 }

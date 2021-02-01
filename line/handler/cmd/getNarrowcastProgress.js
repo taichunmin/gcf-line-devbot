@@ -1,4 +1,3 @@
-const _ = require('lodash')
 const msgJsonStringify = require('../../msg/json-stringify')
 
 module.exports = async (ctx, next) => {

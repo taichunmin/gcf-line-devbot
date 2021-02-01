@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { parseJsonOrDefault } = require('../../libs/helper')
+const { log, parseJsonOrDefault } = require('../../libs/helper')
 const msgReplyFlexError = require('../msg/reply-flex-error')
 
 module.exports = async (ctx, next) => {
@@ -12,7 +12,7 @@ module.exports = async (ctx, next) => {
     if (isPartialFlex) msg = { altText: '缺少替代文字', contents: msg, type: 'flex' }
 
     // 回傳前先記錄一次
-    ctx.logger.log({ message: 'reply flex from text', msg })
+    log({ message: 'reply flex from text', msg })
     await ctx.replyMessage(msg)
   } catch (err) {
     const lineApiErrData = _.get(err, 'originalError.response.data')

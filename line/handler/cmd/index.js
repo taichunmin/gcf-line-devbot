@@ -1,6 +1,7 @@
 const _ = require('lodash')
-const path = require('path')
+const { log } = require('../../../libs/helper')
 const fs = require('fs')
+const path = require('path')
 
 const cmdCache = {}
 
@@ -35,7 +36,7 @@ const findIdFuncs = {
 
 module.exports = async (ctx, next) => {
   const text = _.trim(_.get(ctx, 'event.message.text'))
-  ctx.logger.log(text)
+  log(text)
   if (text.length >= 1000) return await next() // 轉交給下一個 middleware 處理
   const match = text.match(/^\/(\w+)(?: (.+))?/)
   if (!match) return await next() // 轉交給下一個 middleware 處理

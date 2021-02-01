@@ -1,14 +1,15 @@
 const _ = require('lodash')
-const { errToPlainObj } = require('../../libs/helper')
+const { errToPlainObj, log } = require('../../libs/helper')
 const msgJsonStringify = require('../msg/json-stringify')
 
 module.exports = async (ctx, next) => {
   try {
     const { event, line } = ctx
-    ctx.logger.log({ message: 'log incoming event', event }) // 先把 event 紀錄到 logger
+    const userId = _.get(event, 'source.userId')
+    log({ message: `Incoming event by ${userId}`, event }) // 先把 event 紀錄到 logger
 
     // 如果是測試訊息或是沒有 replyToken 就直接不處理
-    if (!event.replyToken || _.get(event, 'source.userId') === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return
+    if (!event.replyToken || userId === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return
 
     // 設定輔助函式
     ctx.replyMessage = async msg => {
@@ -25,6 +26,6 @@ module.exports = async (ctx, next) => {
 
     // 避免錯誤拋到外層
     err.message = `fnPreEvent: ${err.message}`
-    ctx.logger.error(err)
+    log('ERROR', err)
   }
 }
