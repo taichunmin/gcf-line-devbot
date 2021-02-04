@@ -44,24 +44,29 @@ exports.log = (() => {
 exports.middlewareCompose = middleware => {
   // 型態檢查
   if (!_.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
-  if (_.find(middleware, fn => !_.isFunction(fn))) throw new TypeError('Middleware must be composed of functions!')
+  if (_.some(middleware, fn => !_.isFunction(fn))) throw new TypeError('Middleware must be composed of functions!')
 
   return async (context, next) => {
     const cloned = [...middleware, ...(_.isFunction(next) ? [next] : [])]
-    let ended = false
-    let executed = -1
+    const executed = _.times(cloned.length + 1, () => 0)
     const dispatch = async cur => {
-      if (cur <= executed) throw new Error('next() called multiple times')
-      executed = cur
-      if (cur >= cloned.length) return
-      return await cloned[cur](context, async () => {
-        if (ended) throw new Error('next() should be awaited')
-        return await dispatch(cur + 1)
-      })
+      if (executed[cur] !== 0) throw new Error(`middleware[${cur}] called multiple times`)
+      if (cur >= cloned.length) {
+        executed[cur] = 2
+        return
+      }
+      try {
+        executed[cur] = 1
+        const result = await cloned[cur](context, () => dispatch(cur + 1))
+        if (executed[cur + 1] === 1) throw new Error(`next() in middleware[${cur}] should be awaited`)
+        executed[cur] = 2
+        return result
+      } catch (err) {
+        executed[cur] = 3
+        throw err
+      }
     }
-    const result = await dispatch(0)
-    ended = true
-    return result
+    return await dispatch(0)
   }
 }
 

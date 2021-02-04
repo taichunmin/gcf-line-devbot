@@ -245,6 +245,7 @@ describe('middlewareCompose', () => {
   })
 
   test('should throw error on non-await async middleware', async () => {
+    expect.hasAssertions()
     try {
       await sut.middlewareCompose([
         async (ctx, next) => {

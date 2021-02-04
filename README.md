@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/taichunmin/gcf-line-devbot/workflows/Deploy/badge.svg)](https://github.com/taichunmin/gcf-line-devbot/actions)
+[![Build Status](https://github.com/taichunmin/gcf-line-devbot/workflows/Node.js%20CI/badge.svg)](https://github.com/taichunmin/gcf-line-devbot/actions)
 
 # LINE Flex 開發人員工具
 
