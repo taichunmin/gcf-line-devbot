@@ -13,9 +13,16 @@ module.exports = async (ctx, next) => {
 
     // 設定輔助函式
     ctx.replyMessage = async msg => {
-      if (ctx.replyed) throw new Error('重複呼叫 event.replyMessage')
-      await line.replyMessage(event.replyToken, msg)
-      ctx.replyed = 1
+      try {
+        if (ctx.replyed) throw new Error('重複呼叫 event.replyMessage')
+        await line.replyMessage(event.replyToken, msg)
+        ctx.replyed = 1
+      } catch (err) {
+        _.set(err, 'data.msg', msg)
+        err.message = _.get(err, 'originalError.response.data.message', err.message)
+        err.response = _.get(err, 'originalError.response')
+        throw err
+      }
     }
 
     await next() // 繼續執行其他 middleware
@@ -25,7 +32,7 @@ module.exports = async (ctx, next) => {
     } catch (err) {}
 
     // 避免錯誤拋到外層
-    err.message = `fnPreEvent: ${err.message}`
+    err.message = `fnInitEvent: ${err.message}`
     log('ERROR', err)
   }
 }

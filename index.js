@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const _ = require('lodash')
 const { log } = require('./libs/helper')
 const Line = require('@line/bot-sdk').Client

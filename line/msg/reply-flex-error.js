@@ -1,8 +1,8 @@
 const _ = require('lodash')
 
 module.exports = data => ({
-  type: 'flex',
   altText: data.message || '訊息物件有誤',
+  type: 'flex',
   contents: {
     size: 'giga',
     type: 'bubble',

@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const JSON5 = require('json5')
+const Qs = require('qs')
 
 exports.getenv = (key, defaultval) => _.get(process, ['env', key], defaultval)
 
@@ -78,3 +79,5 @@ exports.parseJsonOrDefault = (str, defaultValue) => {
     return defaultValue
   }
 }
+
+exports.httpBuildQuery = (obj, overrides = {}) => Qs.stringify(obj, { arrayFormat: 'brackets', ...overrides })
