@@ -6,17 +6,17 @@
   "author": "taichunmin <taichunmin@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@line/bot-sdk": "^7.2.0",
+    "@line/bot-sdk": "^7.3.0",
     "axios": "^0.21.1",
     "dayjs": "^1.10.4",
-    "dotenv": "^8.2.0",
+    "dotenv": "^9.0.2",
     "json5": "^2.2.0",
     "lodash": "^4.17.21",
     "qs": "^6.10.1"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.7.1",
-    "eslint": "^7.24.0",
+    "eslint": "^7.26.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
