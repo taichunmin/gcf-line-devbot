@@ -1,6 +1,9 @@
 const _ = require('lodash')
+const Base64 = require('crypto-js/enc-base64')
 const JSON5 = require('json5')
+const SHA1 = require('crypto-js/sha1')
 const Qs = require('qs')
+const Utf8 = require('crypto-js/enc-utf8')
 
 exports.getenv = (key, defaultval) => _.get(process, ['env', key], defaultval)
 
@@ -14,6 +17,9 @@ exports.errToPlainObj = (() => {
     'info',
     'message',
     'name',
+    'originalError.response.data',
+    'originalError.response.headers',
+    'originalError.response.status',
     'path',
     'port',
     'reason',
@@ -81,3 +87,14 @@ exports.parseJsonOrDefault = (str, defaultValue) => {
 }
 
 exports.httpBuildQuery = (obj, overrides = {}) => Qs.stringify(obj, { arrayFormat: 'brackets', ...overrides })
+
+exports.encodeBase64url = str => {
+  if (!_.isInteger(str.sigBytes)) str = Utf8.parse(`${str}`)
+  return Base64.stringify(str).replace(/[+/=]/g, c => _.get({ '+': '-', '/': '_', '=': '' }, c))
+}
+
+exports.decodeBase64 = str => {
+  return Utf8.stringify(Base64.parse(str.replace(/[-_]/g, c => _.get({ '-': '+', _: '/' }, c))))
+}
+
+exports.sha1Base64url = str => exports.encodeBase64url(SHA1(str))
