@@ -19,14 +19,14 @@ module.exports = async (ctx, next) => {
         ctx.replyed = 1
       } catch (err) {
         _.set(err, 'data.msg', msg)
-        err.message = _.get(err, 'originalError.response.data.message', err.message)
-        err.response = _.get(err, 'originalError.response')
+        err.response = _.get(err, 'originalError.response', err.response)
         throw err
       }
     }
 
     await next() // 繼續執行其他 middleware
   } catch (err) {
+    err.message = _.get(err, 'response.data.message', err.message)
     try { // 如果還可以 reply 就嘗試把訊息往回傳
       if (!ctx.replyed) await ctx.replyMessage(msgJsonStringify(_.omit(errToPlainObj(err), ['stack'])))
     } catch (err) {}

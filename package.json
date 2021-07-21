@@ -9,25 +9,26 @@
     "@line/bot-sdk": "^7.3.0",
     "axios": "^0.21.1",
     "crypto-js": "^4.0.0",
-    "dayjs": "^1.10.5",
+    "dayjs": "^1.10.6",
     "dotenv": "^10.0.0",
     "json5": "^2.2.0",
     "lodash": "^4.17.21",
     "qs": "^6.10.1"
   },
   "devDependencies": {
-    "@google-cloud/functions-framework": "^1.8.0",
-    "eslint": "^7.29.0",
+    "@google-cloud/functions-framework": "^1.9.0",
+    "eslint": "^7.31.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
-    "jest": "^27.0.4"
+    "jest": "^27.0.6"
   },
   "scripts": {
-    "deploy": "gcloud functions deploy gcf-line-devbot --allow-unauthenticated --entry-point=main --env-vars-file=.env.yaml --max-instances=1 --memory=128MB --no-user-output-enabled --region=us-central1 --runtime=nodejs12 --timeout=60s --trigger-http",
+    "deploy": "gcloud functions deploy gcf-line-devbot --allow-unauthenticated --entry-point=main --env-vars-file=.env.yaml --max-instances=1 --memory=128MB --no-user-output-enabled --region=us-central1 --runtime=nodejs14 --timeout=60s --trigger-http",
     "lint": "eslint --ext .js --fix .",
     "start": "functions-framework --port=3000 --target=main --signature-type=http",
-    "test": "jest"
+    "test": "jest",
+    "repl": "node --experimental-repl-await repl.js"
   }
 }

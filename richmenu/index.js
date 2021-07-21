@@ -1,6 +1,7 @@
-const { default: axios } = require('axios')
 const _ = require('lodash')
-const { log, sha1Base64url } = require('../libs/helper')
+const { beautifyFlex, log, sha1Base64url } = require('../libs/helper')
+const axios = require('axios')
+const JSON5 = require('json5')
 
 const RICHMENU_FILES = [
   'alias-a',
@@ -17,7 +18,8 @@ exports.bootstrap = (() => {
     try {
       const line = ctx.line
       const channelAccessToken = line.config.channelAccessToken
-      if (!cached.updatedAt) {
+      const nowts = Date.now()
+      if (_.toSafeInteger(cached.expiredAt) < nowts) {
         // 先取得舊的 richmenu
         const [oldMenus, newMenus, oldAliases] = await Promise.all([
           line.getRichMenuList(),
@@ -72,7 +74,7 @@ exports.bootstrap = (() => {
 
         // 避免重複執行
         cached.cache = newAliasToId
-        cached.updatedAt = Date.now()
+        cached.expiredAt = nowts + 36e5 // 1hr
       }
       ctx.richmenus = cached.cache
       return ctx
@@ -86,7 +88,9 @@ exports.loadMenus = async () => {
   const menus = []
   for (const filename of RICHMENU_FILES) {
     const menu = require(`./${filename}`)
-    _.set(menu, 'metadata.name', sha1Base64url(JSON.stringify(menu)))
+    _.set(menu, 'metadata.name', '') // 避免不小心指定 menu.metadata.name
+    const sha1 = sha1Base64url(JSON5.stringify(beautifyFlex(menu)))
+    _.set(menu, 'metadata.name', sha1)
     menus.push(menu)
   }
   return menus
