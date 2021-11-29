@@ -53,7 +53,7 @@ exports.middlewareCompose = middleware => {
   if (!_.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
   if (_.some(middleware, fn => !_.isFunction(fn))) throw new TypeError('Middleware must be composed of functions!')
 
-  return async (context, next) => {
+  return async (context = {}, next) => {
     const cloned = [...middleware, ...(_.isFunction(next) ? [next] : [])]
     const executed = _.times(cloned.length + 1, () => 0)
     const dispatch = async cur => {
