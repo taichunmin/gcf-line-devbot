@@ -246,6 +246,7 @@ describe('middlewareCompose', () => {
 
   test('should throw error on non-await async middleware', async () => {
     expect.hasAssertions()
+    const ctx1 = { flag: 0 }
     try {
       await sut.middlewareCompose([
         async (ctx, next) => {
@@ -253,11 +254,12 @@ describe('middlewareCompose', () => {
         },
         async (ctx, next) => {
           await sleep(1)
-          throw new Error('Wrong')
+          ctx1.flag = 1
         },
-      ])({})
+      ])(ctx1)
     } catch (err) {
       expect(err.message).toContain('should be awaited')
+      expect(ctx1.flag).toBe(0)
     }
   })
 

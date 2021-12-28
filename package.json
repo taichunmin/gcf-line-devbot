@@ -7,22 +7,22 @@
   "license": "MIT",
   "dependencies": {
     "@line/bot-sdk": "^7.4.0",
-    "axios": "^0.21.4",
+    "axios": "^0.24.0",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.10.7",
     "dotenv": "^10.0.0",
     "json5": "^2.2.0",
     "lodash": "^4.17.21",
-    "qs": "^6.10.1"
+    "qs": "^6.10.2"
   },
   "devDependencies": {
-    "@google-cloud/functions-framework": "^1.9.0",
-    "eslint": "^7.32.0",
+    "@google-cloud/functions-framework": "^2.1.0",
+    "eslint": "^8.5.0",
     "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "jest": "^27.2.3"
+    "eslint-plugin-promise": "^6.0.0",
+    "jest": "^27.4.5"
   },
   "scripts": {
     "deploy": "gcloud functions deploy gcf-line-devbot --allow-unauthenticated --entry-point=main --env-vars-file=.env.yaml --max-instances=1 --memory=128MB --no-user-output-enabled --region=us-central1 --runtime=nodejs14 --timeout=60s --trigger-http",

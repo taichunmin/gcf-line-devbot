@@ -2,14 +2,21 @@ const _ = require('lodash')
 const { errToPlainObj, log } = require('../../libs/helper')
 const msgJsonStringify = require('../msg/json-stringify')
 
+const describeEventSource = source => {
+  const type = source.type
+  if (type === 'user') return `Incoming event from ${source.userId}`
+  if (!source.userId) return `Incoming event from ${type} ${source[type + 'Id']}`
+  return `Incoming event from ${source.userId} in ${type} ${source[type + 'Id']}`
+}
+
 module.exports = async (ctx, next) => {
   try {
     const { event, line } = ctx
-    const userId = _.get(event, 'source.userId')
-    log({ message: `Incoming event by ${userId}`, event }) // 先把 event 紀錄到 logger
+    const source = _.get(event, 'source', {})
+    log({ message: describeEventSource(source), event }) // 先把 event 紀錄到 logger
 
     // 如果是測試訊息或是沒有 replyToken 就直接不處理
-    if (!event.replyToken || userId === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return
+    if (!event.replyToken || source.userId === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return
 
     // 設定輔助函式
     ctx.replyMessage = async msg => {

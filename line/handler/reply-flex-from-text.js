@@ -12,11 +12,15 @@ module.exports = async (ctx, next) => {
     if (isPartialFlex) msg = { altText: '缺少替代文字', contents: msg, type: 'flex' }
 
     // 回傳前先記錄一次
-    log({ message: 'reply flex from text', msg })
+    log({ message: `reply flex from text, altText: ${msg.altText}`, msg })
     await ctx.replyMessage(msg)
   } catch (err) {
     const lineApiErrData = _.get(err, 'originalError.response.data')
     if (!lineApiErrData) throw err // 並非 LINE API 的錯誤
-    await ctx.replyMessage(msgReplyFlexError(lineApiErrData))
+    err.message = `reply flex from text: ${_.get(lineApiErrData, 'message', err.message)}`
+    log('ERROR', err)
+    try { // 如果還可以 reply 就嘗試把訊息往回傳
+      await ctx.replyMessage(msgReplyFlexError(lineApiErrData))
+    } catch (err) {}
   }
 }
