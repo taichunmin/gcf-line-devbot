@@ -1,6 +1,63 @@
 const _ = require('lodash')
-const { log, parseJsonOrDefault } = require('../../libs/helper')
+const { beautifyFlex, encodeGzip, log, parseJsonOrDefault } = require('../../libs/helper')
+const JSON5 = require('json5')
 const msgReplyFlexError = require('../msg/reply-flex-error')
+
+const flexShareBtn = uri => ({
+  altText: '點此透過 LINE 數位版名片分享',
+  type: 'flex',
+  contents: {
+    size: 'nano',
+    type: 'bubble',
+    body: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      layout: 'horizontal',
+      paddingAll: '5px',
+      spacing: 'md',
+      type: 'box',
+      action: {
+        type: 'uri',
+        label: 'action',
+        uri,
+      },
+      contents: [
+        {
+          height: '16px',
+          layout: 'vertical',
+          type: 'box',
+          width: '16px',
+          contents: [
+            {
+              aspectMode: 'cover',
+              aspectRatio: '1:1',
+              size: 'full',
+              type: 'image',
+              url: 'https://i.imgur.com/IFjR25G.png',
+            },
+          ],
+        },
+        {
+          flex: 0,
+          size: '16px',
+          text: '分享',
+          type: 'text',
+        },
+      ],
+    },
+  },
+  sender: {
+    iconUrl: 'https://i.imgur.com/1KZoSue.png',
+    name: '數位版名片',
+  },
+})
+
+const tryAddShareBtn = msg => {
+  if (_.isArray(msg) && msg.length >= 5) return msg
+  const url = `https://lihi1.me/e6Ppv/${encodeGzip(JSON5.stringify(beautifyFlex(msg)))}`
+  if (url.length > 1000) return msg
+  return [flexShareBtn(url), ..._.castArray(msg)]
+}
 
 module.exports = async (ctx, next) => {
   try {
@@ -13,7 +70,8 @@ module.exports = async (ctx, next) => {
 
     // 回傳前先記錄一次
     log({ message: `reply flex from text, altText: ${msg.altText}`, msg })
-    await ctx.replyMessage(msg)
+
+    await ctx.replyMessage(tryAddShareBtn(msg)) // 嘗試新增透過 LINE 數位版名片分享的按鈕
   } catch (err) {
     const lineApiErrData = _.get(err, 'originalError.response.data')
     if (!lineApiErrData) throw err // 並非 LINE API 的錯誤
