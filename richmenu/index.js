@@ -10,6 +10,13 @@ const RICHMENU_FILES = [
   'link-a',
   'link-b',
   'link-c',
+  'playground-1',
+  'playground-2',
+  'playground-3',
+  'playground-4',
+  'playground-5',
+  'playground-6',
+  'playground-7',
 ]
 
 exports.bootstrap = (() => {
@@ -88,6 +95,16 @@ exports.loadMenus = async () => {
   const menus = []
   for (const filename of RICHMENU_FILES) {
     const menu = require(`./${filename}`)
+    const areas = menu?.metadata?.areas
+    if (_.isArray(areas)) {
+      menu.metadata.areas = _.sortBy(areas, [
+        'bounds.x',
+        'bounds.y',
+        'bounds.width',
+        'bounds.height',
+        'action.type',
+      ])
+    }
     _.set(menu, 'metadata.name', '') // 避免不小心指定 menu.metadata.name
     const sha1 = sha1Base64url(JSON5.stringify(beautifyFlex(menu)))
     _.set(menu, 'metadata.name', sha1)
