@@ -1,5 +1,6 @@
 const _ = require('lodash')
-const { beautifyFlex, encodeGzip, log, parseJsonOrDefault } = require('../../libs/helper')
+const { beautifyFlex, encodeBase64url, log, parseJsonOrDefault } = require('../../libs/helper')
+const { octokit } = require('../../libs/octokit')
 const JSON5 = require('json5')
 const msgReplyFlexError = require('../msg/reply-flex-error')
 
@@ -52,11 +53,22 @@ const flexShareBtn = uri => ({
   },
 })
 
-const tryAddShareBtn = msg => {
-  if (_.isArray(msg) && msg.length >= 5) return msg
-  const url = `https://lihi1.me/e6Ppv/${encodeGzip(JSON5.stringify(beautifyFlex(msg)))}`
-  if (url.length > 1000) return msg
-  return [flexShareBtn(url), ..._.castArray(msg)]
+const tryAddShareBtn = async (ctx, msg) => {
+  try {
+    if (!octokit) throw new Error() // 未設定 OCTOKIT_ACCESS_TOKEN
+    if (_.isArray(msg) && msg.length >= 5) throw new Error() // 沒有辦法新增分享按鈕
+    const { describeEventSource, event } = ctx
+    const filename = `gcf-line-devbot-${event?.message?.id}.json5`
+    const gist = await octokit.request('POST /gists', {
+      description: describeEventSource,
+      files: { [filename]: { content: JSON5.stringify(beautifyFlex(msg)) } },
+    })
+    const url = `https://lihi1.com/kLzL9/${encodeBase64url(gist.data.files[filename].raw_url)}`
+    return [flexShareBtn(url), ..._.castArray(msg)]
+  } catch (err) {
+    if (err.message) log('ERROR', err)
+    return msg
+  }
 }
 
 module.exports = async (ctx, next) => {
@@ -68,10 +80,9 @@ module.exports = async (ctx, next) => {
     const isPartialFlex = _.includes(['bubble', 'carousel'], _.get(msg, 'type'))
     if (isPartialFlex) msg = { altText: '缺少替代文字', contents: msg, type: 'flex' }
 
-    // 回傳前先記錄一次
-    log({ message: `reply flex from text, altText: ${msg.altText}`, msg })
-
-    await ctx.replyMessage(tryAddShareBtn(msg)) // 嘗試新增透過 LINE 數位版名片分享的按鈕
+    log({ message: `reply flex from text, altText: ${msg?.altText ?? msg?.text}`, msg }) // 回傳前先記錄一次
+    msg = await tryAddShareBtn(ctx, msg) // 嘗試新增透過 LINE 數位版名片分享的按鈕
+    await ctx.replyMessage(msg)
   } catch (err) {
     const lineApiErrData = _.get(err, 'originalError.response.data')
     if (!lineApiErrData) throw err // 並非 LINE API 的錯誤

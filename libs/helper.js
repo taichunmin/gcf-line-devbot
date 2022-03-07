@@ -1,7 +1,6 @@
 const _ = require('lodash')
-const { enc: { Base64, Utf8 }, lib: { WordArray }, SHA1 } = require('crypto-js')
+const { enc: { Base64, Utf8 }, SHA1 } = require('crypto-js')
 const JSON5 = require('json5')
-const pako = require('pako')
 const Qs = require('qs')
 
 exports.getenv = (key, defaultval) => _.get(process, ['env', key], defaultval)
@@ -106,8 +105,6 @@ exports.beautifyFlex = obj => {
   return _.fromPairs([..._.sortBy(grp.a, '0'), ..._.sortBy(grp.b, '0')])
 }
 
-exports.encodeGzip = str => exports.encodeBase64url(WordArray.create(pako.deflate(str)))
-
 exports.WordArrayToUint8Array = word => {
   const len = word.words.length
   const view = new DataView(new ArrayBuffer(len << 2))
@@ -116,5 +113,3 @@ exports.WordArrayToUint8Array = word => {
 }
 
 exports.urlToBase64 = str => str.replace(/[-_]/g, c => _.get({ '-': '+', _: '/' }, c))
-
-exports.decodeGzip = base64url => pako.inflate(exports.WordArrayToUint8Array(Base64.parse(exports.urlToBase64(base64url))), { to: 'string' })

@@ -293,10 +293,3 @@ describe('middlewareCompose', () => {
     expect(actual).toBe(1)
   })
 })
-
-describe('gzip', () => {
-  test('string should be the same after encode and decode', async () => {
-    const str = 'taichunmin'
-    expect(sut.decodeGzip(sut.encodeGzip(str))).toEqual(str)
-  })
-})
