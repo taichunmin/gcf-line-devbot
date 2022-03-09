@@ -2,17 +2,12 @@ require('dotenv').config()
 
 const _ = require('lodash')
 const { log } = require('./libs/helper')
+const functions = require('@google-cloud/functions-framework')
 const Line = require('@line/bot-sdk').Client
-const richmenu = require('./richmenu')
 const lineHandler = require('./line/handler')
+const richmenu = require('./richmenu')
 
-/**
- * Responds to any HTTP request.
- *
- * @param {!express:Request} req HTTP request context.
- * @param {!express:Response} res HTTP response context.
- */
-exports.main = async (req, res) => {
+functions.http('main', async (req, res) => {
   try {
     // 處理 access token
     const channelAccessToken = req.path.substring(1)
@@ -30,4 +25,4 @@ exports.main = async (req, res) => {
     log('ERROR', err)
     res.status(err.status || 500).send(err.message)
   }
-}
+})

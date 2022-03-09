@@ -36,11 +36,11 @@ const findIdFuncs = {
 
 module.exports = async (ctx, next) => {
   const text = _.trim(_.get(ctx, 'event.message.text'))
-  log(text)
   if (text.length >= 1000) return await next() // 轉交給下一個 middleware 處理
   const match = text.match(/^\/(\w+)(?: (.+))?/)
   if (!match) return await next() // 轉交給下一個 middleware 處理
 
+  log(text)
   const cmd = match[1]
   if (!cmdCache[cmd]) {
     const cmdPath = path.resolve(__dirname, `${cmd}.js`)

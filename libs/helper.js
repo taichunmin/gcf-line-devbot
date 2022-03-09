@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { enc: { Base64, Utf8 }, SHA1 } = require('crypto-js')
+const { enc: { Base64, Base64url, Utf8 }, SHA1 } = require('crypto-js')
 const JSON5 = require('json5')
 const Qs = require('qs')
 
@@ -88,14 +88,14 @@ exports.httpBuildQuery = (obj, overrides = {}) => Qs.stringify(obj, { arrayForma
 
 exports.encodeBase64url = str => {
   if (!_.isInteger(str.sigBytes)) str = Utf8.parse(`${str}`)
-  return Base64.stringify(str).replace(/[+/=]/g, c => _.get({ '+': '-', '/': '_', '=': '' }, c))
+  return Base64url.stringify(str)
 }
 
 exports.decodeBase64 = str => {
   return Utf8.stringify(Base64.parse(str.replace(/[-_]/g, c => _.get({ '-': '+', _: '/' }, c))))
 }
 
-exports.sha1Base64url = str => exports.encodeBase64url(SHA1(str))
+exports.sha1Base64url = str => Base64url.stringify(SHA1(str))
 
 exports.beautifyFlex = obj => {
   if (_.isArray(obj)) return _.map(obj, exports.beautifyFlex)

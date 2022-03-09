@@ -25,8 +25,9 @@ exports.bootstrap = (() => {
     try {
       const line = ctx.line
       const channelAccessToken = line.config.channelAccessToken
+      const channelHash = sha1Base64url(channelAccessToken)
       const nowts = Date.now()
-      if (_.toSafeInteger(cached.expiredAt) < nowts) {
+      if (_.toSafeInteger(cached[channelHash]?.expiredAt) < nowts) {
         // 先取得舊的 richmenu
         const [oldMenus, newMenus, oldAliases] = await Promise.all([
           line.getRichMenuList(),
@@ -59,7 +60,7 @@ exports.bootstrap = (() => {
             else if (oldId !== menu.richMenuId) await exports.updateRichmenuAlias(channelAccessToken, menu.alias, menu.richMenuId)
           } catch (err) {
             _.set(err, 'data.menu', menu)
-            log('error', err)
+            log('ERROR', err)
           }
         }))
         const newAliasToId = _.fromPairs(_.map(newMenus, menu => [menu.alias, menu.richMenuId]))
@@ -70,23 +71,25 @@ exports.bootstrap = (() => {
         const delAlias = _.difference(_.map(oldAliases, 'richMenuAliasId'), _.map(newMenus, 'alias'))
         await Promise.all([
           ..._.map(delMenuIds, async menuId => {
-            log(`刪除不需要的 menuId: ${menuId}`)
+            log(`刪除不需要的 menuId = ${menuId}, hash = ${oldIdToHash[menuId]}`)
             await line.deleteRichMenu(menuId)
           }),
           ..._.map(delAlias, async alias => {
-            log(`刪除不需要的 menuAlias: ${alias}`)
+            log(`刪除不需要的 menuAlias = ${alias}`)
             await exports.deleteRichmenuAlias(channelAccessToken, alias)
           }),
         ])
 
         // 避免重複執行
-        cached.cache = newAliasToId
-        cached.expiredAt = nowts + 36e5 // 1hr
+        cached[channelHash] = {
+          cache: newAliasToId,
+          expiredAt: nowts + 36e5, // 1hr
+        }
       }
-      ctx.richmenus = cached.cache
+      ctx.richmenus = cached[channelHash].cache
       return ctx
     } catch (err) {
-      log('error', err)
+      log('ERROR', err)
     }
   }
 })()

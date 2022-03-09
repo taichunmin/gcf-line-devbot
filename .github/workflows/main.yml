@@ -34,8 +34,11 @@ jobs:
         workload_identity_provider: 'projects/391399927959/locations/global/workloadIdentityPools/github-actions-taichunmin-pools/providers/github-actions-provider'
         service_account: 'gcf-line-devbot@taichunmin.iam.gserviceaccount.com'
     # https://github.com/google-github-actions/setup-gcloud
+    # https://github.com/google-github-actions/auth#setting-up-workload-identity-federation
     - name: 設定 Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v0
+      with:
+        install_components: 'beta'
     - name: 確認 Google Cloud SDK
       run: gcloud info
     - name: 建立 GCF 環境變數檔案
