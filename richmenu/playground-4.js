@@ -4,28 +4,28 @@ const RICHMENU_ALIAS = 'playground-4'
 
 module.exports = {
   alias: RICHMENU_ALIAS,
-  image: 'https://i.imgur.com/byzB9sn.png',
+  image: 'https://i.imgur.com/GjSm4C0.png',
   metadata: {
     chatBarText: '打開圖文選單',
     selected: true,
     size: { width: 2500, height: 1684 },
     areas: [
       {
-        bounds: { x: 2310, y: 0, width: 190, height: 208 },
+        bounds: { x: 2325, y: 0, width: 175, height: 208 },
         action: {
           type: 'message',
           text: '/richmenuPlayground exit',
         },
       },
       {
-        bounds: { x: 2120, y: 0, width: 190, height: 208 },
+        bounds: { x: 2150, y: 0, width: 175, height: 208 },
         action: {
           type: 'uri',
           uri: 'https://developers.line.biz/en/docs/messaging-api/try-rich-menu/#try-datetime-picker-action',
         },
       },
       {
-        bounds: { x: 0, y: 208, width: 300, height: 256 },
+        bounds: { x: 0, y: 208, width: 300, height: 245 },
         action: {
           type: 'richmenuswitch',
           richMenuAliasId: 'playground-1',
@@ -33,7 +33,7 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 1030, y: 208, width: 730, height: 256 },
+        bounds: { x: 1030, y: 208, width: 730, height: 245 },
         action: {
           type: 'richmenuswitch',
           richMenuAliasId: 'playground-5',
@@ -41,7 +41,7 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 0, y: 1010, width: 1600, height: 300 },
+        bounds: { x: 0, y: 1016, width: 1600, height: 300 },
         action: {
           type: 'datetimepicker',
           data: 'actionId=31',
@@ -49,7 +49,7 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 0, y: 1310, width: 840, height: 300 },
+        bounds: { x: 0, y: 1315, width: 830, height: 300 },
         action: {
           type: 'datetimepicker',
           data: 'actionId=32',
@@ -58,7 +58,7 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 840, y: 1310, width: 760, height: 300 },
+        bounds: { x: 830, y: 1315, width: 770, height: 300 },
         action: {
           type: 'datetimepicker',
           data: 'actionId=33',
@@ -68,7 +68,7 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 1600, y: 1010, width: 900, height: 300 },
+        bounds: { x: 1600, y: 1016, width: 900, height: 300 },
         action: {
           type: 'datetimepicker',
           data: 'actionId=34',
@@ -76,7 +76,7 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 1600, y: 1310, width: 900, height: 300 },
+        bounds: { x: 1600, y: 1315, width: 900, height: 300 },
         action: {
           type: 'datetimepicker',
           data: 'actionId=35',

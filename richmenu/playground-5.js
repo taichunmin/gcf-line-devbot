@@ -4,28 +4,28 @@ const RICHMENU_ALIAS = 'playground-5'
 
 module.exports = {
   alias: RICHMENU_ALIAS,
-  image: 'https://i.imgur.com/0rg07pn.png',
+  image: 'https://i.imgur.com/0KBhjYO.png',
   metadata: {
     chatBarText: '打開圖文選單',
     selected: true,
     size: { width: 2500, height: 1684 },
     areas: [
       {
-        bounds: { x: 2310, y: 0, width: 190, height: 208 },
+        bounds: { x: 2325, y: 0, width: 175, height: 208 },
         action: {
           type: 'message',
           text: '/richmenuPlayground exit',
         },
       },
       {
-        bounds: { x: 2120, y: 0, width: 190, height: 208 },
+        bounds: { x: 2150, y: 0, width: 175, height: 208 },
         action: {
           type: 'uri',
           uri: 'https://developers.line.biz/en/docs/messaging-api/try-rich-menu/#try-richmenu-switch-action',
         },
       },
       {
-        bounds: { x: 0, y: 208, width: 300, height: 256 },
+        bounds: { x: 0, y: 208, width: 300, height: 245 },
         action: {
           type: 'richmenuswitch',
           richMenuAliasId: 'playground-1',
@@ -33,7 +33,7 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 300, y: 208, width: 730, height: 256 },
+        bounds: { x: 300, y: 208, width: 730, height: 245 },
         action: {
           type: 'richmenuswitch',
           richMenuAliasId: 'playground-4',
@@ -41,7 +41,7 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 0, y: 1000, width: 1250, height: 550 },
+        bounds: { x: 0, y: 1100, width: 1250, height: 450 },
         action: {
           type: 'richmenuswitch',
           richMenuAliasId: 'playground-6',
@@ -49,7 +49,7 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 1250, y: 1000, width: 1250, height: 550 },
+        bounds: { x: 1250, y: 1100, width: 1250, height: 450 },
         action: {
           type: 'richmenuswitch',
           richMenuAliasId: 'playground-7',
