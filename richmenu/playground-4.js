@@ -6,7 +6,7 @@ module.exports = {
   alias: RICHMENU_ALIAS,
   image: 'https://i.imgur.com/GjSm4C0.png',
   metadata: {
-    chatBarText: '打開圖文選單',
+    chatBarText: '點此打開圖文選單',
     selected: true,
     size: { width: 2500, height: 1684 },
     areas: [

@@ -1,10 +1,10 @@
 const { httpBuildQuery } = require('../libs/helper')
 
-const RICHMENU_ALIAS = 'playground-2'
+const RICHMENU_ALIAS = 'playground-8'
 
 module.exports = {
   alias: RICHMENU_ALIAS,
-  image: 'https://i.imgur.com/GF5Qyz8.png',
+  image: 'https://i.imgur.com/VG5R2jn.png',
   metadata: {
     chatBarText: '點此打開圖文選單',
     selected: true,
@@ -21,7 +21,7 @@ module.exports = {
         bounds: { x: 2150, y: 0, width: 175, height: 208 },
         action: {
           type: 'uri',
-          uri: 'https://developers.line.biz/en/docs/messaging-api/try-rich-menu/#try-postback-action',
+          uri: 'https://developers.line.biz/en/docs/messaging-api/actions/#postback-action',
         },
       },
       {
@@ -30,6 +30,14 @@ module.exports = {
           type: 'richmenuswitch',
           richMenuAliasId: 'playground-1',
           data: httpBuildQuery({ from: RICHMENU_ALIAS, to: 'playground-1' }),
+        },
+      },
+      {
+        bounds: { x: 742, y: 208, width: 737, height: 245 },
+        action: {
+          type: 'richmenuswitch',
+          richMenuAliasId: 'playground-2',
+          data: httpBuildQuery({ from: RICHMENU_ALIAS, to: 'playground-2' }),
         },
       },
       {
@@ -49,26 +57,28 @@ module.exports = {
         },
       },
       {
-        bounds: { x: 0, y: 875, width: 1250, height: 420 },
+        bounds: { x: 0, y: 875, width: 1250, height: 370 },
         action: {
+          data: 'actionId=61',
+          fillInText: '---\n這是預先填寫的文字\n---',
+          inputOption: 'openKeyboard',
           type: 'postback',
-          data: 'actionId=21',
-          displayText: '這則文字將顯示在聊天視窗內。',
         },
       },
       {
-        bounds: { x: 1250, y: 875, width: 1250, height: 420 },
+        bounds: { x: 1250, y: 875, width: 1250, height: 370 },
         action: {
+          data: 'actionId=62',
+          inputOption: 'openVoice',
           type: 'postback',
-          data: 'actionId=22',
         },
       },
       {
-        bounds: { x: 0, y: 1295, width: 2500, height: 320 },
+        bounds: { x: 0, y: 1245, width: 2500, height: 370 },
         action: {
-          type: 'richmenuswitch',
-          richMenuAliasId: 'playground-8',
-          data: httpBuildQuery({ from: RICHMENU_ALIAS, to: 'playground-8' }),
+          data: '/postbackInputOption',
+          inputOption: 'closeRichMenu',
+          type: 'postback',
         },
       },
     ],
