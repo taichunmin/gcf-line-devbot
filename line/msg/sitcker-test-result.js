@@ -1,7 +1,7 @@
 const _ = require('lodash')
 
-module.exports = stickers => ({
-  altText: 'RESULTS OF /notifySticker',
+module.exports = ({ nextCmd, stickers, title }) => ({
+  altText: title,
   type: 'flex',
   contents: {
     type: 'bubble',
@@ -13,7 +13,7 @@ module.exports = stickers => ({
         {
           color: '#1DB446',
           size: 'sm',
-          text: 'RESULTS OF /notifySticker',
+          text: title,
           type: 'text',
           weight: 'bold',
         },
@@ -29,10 +29,6 @@ module.exports = stickers => ({
             layout: 'horizontal',
             spacing: 'md',
             type: 'box',
-            action: {
-              type: 'message',
-              text: `/replySticker ${sticker.packageId} ${sticker.stickerId}`,
-            },
             contents: [
               {
                 flex: 0,
@@ -126,8 +122,19 @@ module.exports = stickers => ({
     },
     footer: {
       layout: 'vertical',
+      spacing: 'sm',
       type: 'box',
       contents: [
+        {
+          height: 'sm',
+          style: 'primary',
+          type: 'button',
+          action: {
+            label: nextCmd,
+            type: 'message',
+            text: `${nextCmd} ${_.map(stickers, s => `${s.packageId} ${s.stickerId}`).join(' ')}`,
+          },
+        },
         {
           height: 'sm',
           style: 'primary',
