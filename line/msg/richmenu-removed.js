@@ -1,4 +1,4 @@
-module.exports = command => ({
+module.exports = ({ command, share }) => ({
   type: 'flex',
   altText: '已移除選單，在手機中點選下方按鈕可再次啟用。',
   contents: {
@@ -27,6 +27,16 @@ module.exports = command => ({
             type: 'message',
           },
         },
+        ...(!share ? [] : [{
+          color: '#08c356',
+          style: 'primary',
+          type: 'button',
+          action: {
+            label: '分享給好友',
+            uri: share,
+            type: 'uri',
+          },
+        }]),
       ],
     },
     header: {

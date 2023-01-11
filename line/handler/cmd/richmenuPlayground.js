@@ -2,6 +2,7 @@ const _ = require('lodash')
 const msgRichmenuLinked = require('../../msg/richmenu-linked')
 const msgRichmenuRemoved = require('../../msg/richmenu-removed')
 const msgSendTextToBot = require('../../msg/send-text-to-bot')
+const richmenu = require('../../../richmenu')
 
 const ACTIONS = [
   'playground-1',
@@ -29,9 +30,14 @@ module.exports = async (ctx, next) => {
     return
   }
 
+  await richmenu.bootstrap(ctx) // 確認圖文選單已更新
+
   if (action === 'exit') {
     await ctx.line.unlinkRichMenuFromUser(userId)
-    await ctx.replyMessage(msgRichmenuRemoved('/richmenuPlayground'))
+    await ctx.replyMessage(msgRichmenuRemoved({
+      command: '/richmenuPlayground',
+      share: 'https://liff.line.me/1654437282-A1Bj7p4a/share-google-sheet.html?apiKey=QUl6YVN5QzVVMWJiYkkyNzZZaWFQQ2xEbkx3SDI2aTBQeDZQbXN3&key=aWQ&range=5bel5L2c6KGoMQ&spreadsheetId=MVlveHFXZ3RYa01IUjVfejEwR0hLRkJWWUVsSTA1RmlHeVNnWm5ISWFjQVk&template=aHR0cHM6Ly9naXN0LmdpdGh1YnVzZXJjb250ZW50LmNvbS90YWljaHVubWluL2M5YzllMDA0ZjhkNzdiMGNhYWI2MjRmYzhhZDE2ZGE5L3Jhdy90ZW1wbGF0ZS50eHQ&value=MjE',
+    }))
   } else {
     await ctx.line.linkRichMenuToUser(userId, _.get(ctx, ['richmenus', action]))
     await ctx.replyMessage(msgRichmenuLinked(action))

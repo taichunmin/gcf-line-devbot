@@ -23,8 +23,13 @@ const RICHMENU_FILES = [
 exports.bootstrap = (() => {
   const cached = {}
   return async ctx => {
+    // 避免重複執行
+    const line = ctx.line
+    if (line.richmenuReady) return await line.richmenuReady
+    const readyCb = {}
+    line.richmenuReady = new Promise((resolve, reject) => _.extend(readyCb, { resolve, reject }))
+
     try {
-      const line = ctx.line
       const channelAccessToken = line.config.channelAccessToken
       const channelHash = sha1Base64url(channelAccessToken)
       const nowts = Date.now()
@@ -88,9 +93,11 @@ exports.bootstrap = (() => {
         }
       }
       ctx.richmenus = cached[channelHash].cache
-      return ctx
+      readyCb.resolve(ctx)
+      return await line.richmenuReady
     } catch (err) {
       log('ERROR', err)
+      readyCb.reject(err)
     }
   }
 })()

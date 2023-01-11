@@ -6,7 +6,6 @@ const functions = require('@google-cloud/functions-framework')
 const Line = require('@line/bot-sdk').Client
 const lineHandler = require('./line/handler')
 const linemsgapi = require('./libs/linemsgapi')
-const richmenu = require('./richmenu')
 
 functions.http('main', async (req, res) => {
   try {
@@ -18,10 +17,8 @@ functions.http('main', async (req, res) => {
     // 註冊新的 LINE Messaging API
     line.validateReplyMessage = async msg => linemsgapi.validateReplyMessage(line, msg)
 
-    const ctx = { line, req }
-    await richmenu.bootstrap(ctx)
-
     // 處理 events
+    const ctx = { line, req }
     const events = _.get(req, 'body.events', [])
     await Promise.all(_.map(events, event => lineHandler({ ...ctx, event })))
     res.status(200).send('OK')
