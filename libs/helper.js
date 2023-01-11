@@ -53,6 +53,7 @@ exports.middlewareCompose = middleware => {
 
   return async (context = {}, next) => {
     const cloned = [...middleware, ...(_.isFunction(next) ? [next] : [])]
+    if (!cloned.length) return
     const executed = _.times(cloned.length + 1, () => 0)
     const dispatch = async cur => {
       if (executed[cur] !== 0) throw new Error(`middleware[${cur}] called multiple times`)
@@ -68,6 +69,7 @@ exports.middlewareCompose = middleware => {
         return result
       } catch (err) {
         executed[cur] = 3
+        if (err.stack) err.stack = err.stack.replace(/at async dispatch[^\n]+\n[^\n]+\n\s*/g, '')
         throw err
       }
     }

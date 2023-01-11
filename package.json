@@ -6,28 +6,28 @@
   "author": "taichunmin <taichunmin@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@google-cloud/functions-framework": "^3.1.2",
+    "@google-cloud/functions-framework": "^3.1.3",
     "@line/bot-sdk": "^7.5.2",
-    "axios": "^1.1.3",
+    "axios": "^1.2.2",
     "crypto-js": "^4.1.1",
-    "dayjs": "^1.11.6",
+    "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
-    "json5": "^2.2.1",
+    "json5": "^2.2.3",
     "lodash": "^4.17.21",
-    "octokit": "^2.0.9",
+    "octokit": "^2.0.11",
     "qs": "^6.11.0"
   },
   "devDependencies": {
-    "eslint": "^8.26.0",
+    "eslint": "^8.31.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.3.0",
+    "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "jest": "^29.2.2"
+    "jest": "^29.3.1"
   },
   "scripts": {
-    "deploy": "gcloud functions deploy gcf-line-devbot --allow-unauthenticated --entry-point=main --env-vars-file=.env.yaml --gen2 --max-instances=1 --memory=128Mi --no-user-output-enabled --region=us-central1 --runtime=nodejs16 --timeout=60s --trigger-http",
+    "deploy": "gcloud functions deploy gcf-line-devbot --allow-unauthenticated --entry-point=main --env-vars-file=.env.yaml --gen2 --max-instances=1 --memory=128Mi --no-user-output-enabled --region=us-central1 --runtime=nodejs16 --timeout=60s --trigger-http && gcloud run services update gcf-line-devbot --region=us-central1 --cpu 1 --concurrency 80",
     "lint": "eslint --ext .js --fix .",
     "localhost-run": "autossh -M 0 -o ServerAliveInterval=60 -o ServerAliveCountMax=3 -o StrictHostKeyChecking=no -R 80:localhost:3000 nokey@localhost.run",
     "repl": "node --experimental-repl-await repl.js",
