@@ -4,7 +4,7 @@ const RICHMENU_ALIAS = 'playground-3'
 
 module.exports = {
   alias: RICHMENU_ALIAS,
-  image: 'https://i.imgur.com/phSK2zz.png',
+  image: 'https://hackmd.io/_uploads/SJ5u_qM0el.png',
   metadata: {
     chatBarText: '點此打開圖文選單',
     selected: true,

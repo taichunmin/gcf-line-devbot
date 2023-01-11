@@ -1,6 +1,6 @@
 const _ = require('lodash')
 const msgText = require('../../msg/text')
-const MAX_SLEEP_MS = 24 * 60 * 60 * 1000 // 24 小時
+const MAX_SLEEP_MS = 60 * 60 * 1000 // 1 小時
 
 module.exports = async (ctx, next) => {
   const sleepMs = _.chain(ctx.cmdArg[0] ?? 0).toSafeInteger().clamp(0, MAX_SLEEP_MS).value()

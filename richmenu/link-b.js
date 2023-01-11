@@ -4,7 +4,7 @@ const RICHMENU_ALIAS = 'link-b'
 
 module.exports = {
   alias: RICHMENU_ALIAS,
-  image: 'https://i.imgur.com/wzDH5lL.png',
+  image: 'https://hackmd.io/_uploads/Hy27dczCeg.png',
   metadata: {
     chatBarText: `範例 ${RICHMENU_ALIAS}`,
     selected: true,
