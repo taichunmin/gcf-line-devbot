@@ -2,6 +2,7 @@ const _ = require('lodash')
 const { beautifyFlex, log, sha1Base64url } = require('../libs/helper')
 const axios = require('axios')
 const JSON5 = require('json5')
+const resolvable = require('@josephg/resolvable')
 
 const RICHMENU_FILES = [
   'alias-a',
@@ -26,8 +27,7 @@ exports.bootstrap = (() => {
     // 避免重複執行
     const line = ctx.line
     if (line.richmenuReady) return await line.richmenuReady
-    const readyCb = {}
-    line.richmenuReady = new Promise((resolve, reject) => _.extend(readyCb, { resolve, reject }))
+    line.richmenuReady = resolvable()
 
     try {
       const channelAccessToken = line.config.channelAccessToken
@@ -93,11 +93,11 @@ exports.bootstrap = (() => {
         }
       }
       ctx.richmenus = cached[channelHash].cache
-      readyCb.resolve(ctx)
+      line.richmenuReady.resolve(ctx)
       return await line.richmenuReady
     } catch (err) {
       log('ERROR', err)
-      readyCb.reject(err)
+      line.richmenuReady.reject(err)
     }
   }
 })()

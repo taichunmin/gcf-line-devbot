@@ -49,7 +49,7 @@ exports.log = (() => {
 exports.middlewareCompose = middleware => {
   // 型態檢查
   if (!_.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
-  if (_.some(middleware, fn => !_.isFunction(fn))) throw new TypeError('Middleware must be composed of functions!')
+  if (!_.every(middleware, _.isFunction)) throw new TypeError('Middleware must be composed of functions!')
 
   return async (context = {}, next) => {
     const cloned = [...middleware, ...(_.isFunction(next) ? [next] : [])]
