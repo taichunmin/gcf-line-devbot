@@ -1,27 +1,18 @@
 require('dotenv').config()
 
-const _ = require('lodash')
 const { log } = require('./libs/helper')
+const { middlewareCompose } = require('./libs/helper')
 const functions = require('@google-cloud/functions-framework')
-const Line = require('@line/bot-sdk').Client
-const lineHandler = require('./line/handler')
-const linemsgapi = require('./libs/linemsgapi')
+
+const handler = middlewareCompose([
+  require('./cors'),
+  require('./gtag'),
+  require('./line/handler/index'),
+])
 
 functions.http('main', async (req, res) => {
   try {
-    // 處理 access token
-    const channelAccessToken = req.path.substring(1)
-    if (!/^[a-zA-Z0-9+/=]+$/.test(channelAccessToken)) throw new Error('invalid channel access token')
-    const line = new Line({ channelAccessToken })
-
-    // 註冊新的 LINE Messaging API
-    line.validateReplyMessage = async msg => linemsgapi.validateReplyMessage(line, msg)
-
-    // 處理 events
-    const ctx = { line, req }
-    const events = _.get(req, 'body.events', [])
-    await Promise.all(_.map(events, event => lineHandler({ ...ctx, event })))
-    res.status(200).send('OK')
+    await handler({ req, res })
   } catch (err) {
     log('ERROR', err)
     res.status(err.status || 500).send(err.message)

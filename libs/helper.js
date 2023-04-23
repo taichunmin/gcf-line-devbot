@@ -3,9 +3,25 @@ const { enc: { Base64, Base64url, Utf8 }, SHA1 } = require('crypto-js')
 const JSON5 = require('json5')
 const Qs = require('qs')
 
+const jsonStringify = obj => {
+  try {
+    const preventCircular = new Set()
+    return JSON.stringify(obj, (key, value) => {
+      if (value instanceof Map) return { dataType: 'Map', value: [...value.entries()] }
+      if (_.isObject(value) && !_.isEmpty(value)) {
+        if (preventCircular.has(value)) return '[Circular]'
+        preventCircular.add(value)
+      }
+      return value
+    })
+  } catch (err) {
+    return `[UnexpectedJSONParseError]: ${err.message}`
+  }
+}
+
 exports.getenv = (key, defaultval) => _.get(process, ['env', key], defaultval)
 
-exports.errToPlainObj = (() => {
+exports.errToJson = (() => {
   const ERROR_KEYS = [
     'address',
     'code',
@@ -15,9 +31,6 @@ exports.errToPlainObj = (() => {
     'info',
     'message',
     'name',
-    'originalError.response.data',
-    'originalError.response.headers',
-    'originalError.response.status',
     'path',
     'port',
     'reason',
@@ -30,7 +43,10 @@ exports.errToPlainObj = (() => {
     'statusMessage',
     'syscall',
   ]
-  return err => _.pick(err, ERROR_KEYS)
+  return err => ({
+    ..._.pick(err, ERROR_KEYS),
+    ...(_.isNil(err.originalError) ? {} : { originalError: exports.errToJson(err.originalError) }),
+  })
 })()
 
 exports.log = (() => {
@@ -40,8 +56,8 @@ exports.log = (() => {
     if (args.length > 1 && _.includes(LOG_SEVERITY, _.toUpper(args[0]))) severity = _.toUpper(args.shift())
     _.each(args, arg => {
       if (_.isString(arg)) arg = { message: arg }
-      if (arg instanceof Error) arg = exports.errToPlainObj(arg)
-      console.log(JSON.stringify({ severity, ...arg }))
+      if (arg instanceof Error) arg = exports.errToJson(arg)
+      console.log(jsonStringify({ severity, ...arg }))
     })
   }
 })()

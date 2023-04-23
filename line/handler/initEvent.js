@@ -1,5 +1,5 @@
 const _ = require('lodash')
-const { errToPlainObj, log } = require('../../libs/helper')
+const { errToJson, log } = require('../../libs/helper')
 const msgJsonStringify = require('../msg/json-stringify')
 
 const describeEventSource = source => {
@@ -36,7 +36,7 @@ module.exports = async (ctx, next) => {
   } catch (err) {
     err.message = _.get(err, 'response.data.message', err.message)
     try { // 如果還可以 reply 就嘗試把訊息往回傳
-      if (!ctx.replyed) await ctx.replyMessage(msgJsonStringify(_.omit(errToPlainObj(err), ['stack'])))
+      if (!ctx.replyed) await ctx.replyMessage(msgJsonStringify(_.omit(errToJson(err), ['stack'])))
     } catch (err) {}
 
     // 避免錯誤拋到外層
