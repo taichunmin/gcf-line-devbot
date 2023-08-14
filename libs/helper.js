@@ -7,7 +7,8 @@ const jsonStringify = obj => {
   try {
     const preventCircular = new Set()
     return JSON.stringify(obj, (key, value) => {
-      if (value instanceof Map) return { dataType: 'Map', value: [...value.entries()] }
+      if (value instanceof Map) return _.fromPairs([...value.entries()])
+      if (value instanceof Set) return [...value.values()]
       if (_.isObject(value) && !_.isEmpty(value)) {
         if (preventCircular.has(value)) return '[Circular]'
         preventCircular.add(value)
@@ -62,13 +63,13 @@ exports.log = (() => {
   }
 })()
 
-exports.middlewareCompose = middleware => {
+exports.middlewareCompose = middlewares => {
   // 型態檢查
-  if (!_.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
-  if (!_.every(middleware, _.isFunction)) throw new TypeError('Middleware must be composed of functions!')
+  if (!_.isArray(middlewares)) throw new TypeError('Middleware stack must be an array!')
+  if (!_.every(middlewares, _.isFunction)) throw new TypeError('Middleware must be composed of functions!')
 
   return async (context = {}, next) => {
-    const cloned = [...middleware, ...(_.isFunction(next) ? [next] : [])]
+    const cloned = [...middlewares, ...(_.isFunction(next) ? [next] : [])]
     if (!cloned.length) return
     const executed = _.times(cloned.length + 1, () => 0)
     const dispatch = async cur => {

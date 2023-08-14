@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 const _ = require('lodash')
-const { log, parseJsonOrDefault } = require('./libs/helper')
+const { log, parseJsonOrDefault } = require('../libs/helper')
 const axios = require('axios')
 const createError = require('http-errors')
 
@@ -12,7 +12,6 @@ const reqToJson = req => {
 
 module.exports = async (ctx, next) => {
   const { req, res } = ctx
-  if (req.method !== 'GET' || req.path !== '/mp/collect') return await next()
   try {
     const { api_secret, measurement_id } = req.query
     if (!api_secret || !measurement_id) throw createError(400, 'invalid request')

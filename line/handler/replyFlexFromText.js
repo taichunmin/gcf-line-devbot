@@ -23,7 +23,7 @@ module.exports = async (ctx, next) => {
     if (isPartialFlex) msg = { altText: '缺少替代文字', contents: msg, type: 'flex' }
 
     log({ message: `reply flex from text, altText: ${getAltText(msg)}`, msg }) // 回傳前先記錄一次
-    await ctx.line.validateReplyMessage(msg) // 先驗證 messaging api 的內容正確
+    await ctx.line.validateReplyMessageObjects(msg) // 先透過 messaging api 驗證內容
 
     msg = await tryAddShareBtn(ctx, msg) // 嘗試新增透過 LINE 數位版名片分享的按鈕
     await ctx.replyMessage(msg)

@@ -28,7 +28,7 @@ module.exports = async (ctx, next) => {
     if (_.has(last, 'altText')) last.altText = altText
 
     log({ message: `reply flex from text, altText: ${last.altText}`, msg }) // 回傳前先記錄一次
-    await ctx.line.validateReplyMessage(msg) // 先驗證 messaging api 的內容正確
+    await ctx.line.validateReplyMessageObjects(msg) // 先驗證 messaging api 的內容正確
 
     msg = await tryAddShareBtn(ctx, msg) // 嘗試新增透過 LINE 數位版名片分享的按鈕
     await ctx.replyMessage(msg)

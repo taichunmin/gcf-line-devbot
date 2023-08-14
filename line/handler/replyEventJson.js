@@ -10,7 +10,7 @@ const eventToMsgsHandlers = [
     if (_.get(ctx, 'event.message.type') !== 'sticker') return
     const msg = _.last(ctx.msgs)
     _.update(msg, 'quickReply.items', items => {
-      items = _.toArray(items)
+      items = items ?? []
       const { stickerId, packageId } = ctx.event.message
       items.push({
         type: 'action',

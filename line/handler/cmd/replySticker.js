@@ -9,7 +9,7 @@ module.exports = async (ctx, next) => {
     title: 'RESULTS OF /replySticker',
     stickers: await Promise.all(_.map(stickers, async ([packageId, stickerId]) => {
       try {
-        await ctx.line.validateReplyMessage({
+        await ctx.line.validateReplyMessageObjects({
           packageId: _.toSafeInteger(packageId),
           stickerId: _.toSafeInteger(stickerId),
           type: 'sticker',

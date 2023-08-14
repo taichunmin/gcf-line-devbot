@@ -1,7 +1,6 @@
 const _ = require('lodash')
 const { log, middlewareCompose } = require('../../libs/helper')
-const Line = require('@line/bot-sdk').Client
-const linemsgapi = require('../../libs/linemsgapi')
+const Line = require('../../libs/linebotsdk').Client
 
 // 模仿 Koajs 的 middleware
 const lineEventHander = middlewareCompose([
@@ -20,14 +19,11 @@ module.exports = async (ctx, next) => {
     if (!/^[a-zA-Z0-9+/=]+$/.test(channelAccessToken)) throw new Error('invalid channel access token')
     const line = new Line({ channelAccessToken })
 
-    // 註冊新的 LINE Messaging API
-    line.validateReplyMessage = async msg => linemsgapi.validateReplyMessage(line, msg)
-
     // 處理 events
     const ctx = { line, req }
     const events = _.get(req, 'body.events', [])
     await Promise.all(_.map(events, event => lineEventHander({ ...ctx, event })))
-    res.status(200).send('OK')
+    res.status(200).send({})
   } catch (err) {
     log('ERROR', err)
     res.status(err.status || 500).send(err.message)
