@@ -14,7 +14,7 @@ jobs:
       - name: 安裝 Node.js 與 yarn
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: 'yarn'
       - name: install, lint, test
         run: |
@@ -34,7 +34,7 @@ jobs:
     - name: 安裝 Node.js 與 yarn
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 20
         cache: 'yarn'
     - id: 'auth'
       uses: google-github-actions/auth@v0
