@@ -11,10 +11,10 @@ const describeEventSource = source => {
 
 module.exports = async (ctx, next) => {
   try {
-    const { event, line } = ctx
+    const { event, line, req } = ctx
     const source = _.get(event, 'source', {})
     ctx.describeEventSource = describeEventSource(source)
-    log({ message: ctx.describeEventSource, event }) // 先把 event 紀錄到 logger
+    log({ message: ctx.describeEventSource, body: { ...req.body, events: [event] } }) // 先把 event 紀錄到 logger
 
     // 如果是測試訊息或是沒有 replyToken 就直接不處理
     if (!event.replyToken || source.userId === 'Udeadbeefdeadbeefdeadbeefdeadbeef') return

@@ -3,7 +3,7 @@ const msgJsonStringify = require('../msg/json-stringify')
 
 const eventToMsgsHandlers = [
   // event 轉成 json
-  ctx => { ctx.msgs.push(msgJsonStringify(ctx.event)) },
+  ctx => { ctx.msgs.push(msgJsonStringify({ ...ctx.req.body, events: [ctx.event] })) },
 
   // quickreply sticker
   ctx => {
