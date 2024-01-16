@@ -14,7 +14,7 @@ module.exports = async (ctx, next) => {
     let msg = parseJsonOrDefault(_.get(ctx, 'event.message.text'))
     if (!_.isArray(msg) && !_.isPlainObject(msg)) return await next() // 轉交給下一個 middleware 處理
 
-    if (_.has(msg, 'replyToken')) { // 有 replyToken 代表使用者可能是把剛剛傳送的事件複製貼上
+    if (_.has(msg, 'replyToken') || _.has(msg, 'events.0.replyToken')) { // 有 replyToken 代表使用者可能是把剛剛傳送的事件複製貼上
       return await ctx.replyMessage(msgText('感謝你傳訊息給我，但因為這個訊息疑似是 Messaging API 中傳送給 Webhook 的事件，所以我不知道該怎麼處理它。\n\n如果你是開發者，請參考相關文件: https://developers.line.biz/en/reference/messaging-api/#message-event'))
     }
 
