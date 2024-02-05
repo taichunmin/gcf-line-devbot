@@ -19,6 +19,7 @@ const RICHMENU_FILES = [
   'playground-6',
   'playground-7',
   'playground-8',
+  'playground-9',
 ]
 
 exports.bootstrap = (() => {

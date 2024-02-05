@@ -10,7 +10,7 @@ module.exports = {
     selected: true,
     size: { width: 2500, height: 421 },
     areas: [
-      {
+      { // 換回綠色選單
         bounds: { x: 0, y: 0, width: 1600, height: 421 },
         action: {
           type: 'richmenuswitch',
@@ -18,7 +18,7 @@ module.exports = {
           data: httpBuildQuery({ from: RICHMENU_ALIAS, to: 'playground-5' }),
         },
       },
-      {
+      { // size 說明文件
         bounds: { x: 1600, y: 0, width: 660, height: 421 },
         action: {
           type: 'uri',

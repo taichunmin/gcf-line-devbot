@@ -8,89 +8,64 @@ const flexShareBtn = ({ uri, gistId }) => ({
   type: 'flex',
   contents: {
     type: 'carousel',
-    contents: [
+    contents: _.map([
       {
-        size: 'nano',
-        type: 'bubble',
-        body: {
-          alignItems: 'center',
-          justifyContent: 'center',
-          layout: 'horizontal',
-          paddingAll: '5px',
-          spacing: 'md',
-          type: 'box',
-          action: {
-            type: 'uri',
-            uri,
-          },
-          contents: [
-            {
-              height: '16px',
-              layout: 'vertical',
-              type: 'box',
-              width: '16px',
-              contents: [
-                {
-                  aspectMode: 'cover',
-                  aspectRatio: '1:1',
-                  size: 'full',
-                  type: 'image',
-                  url: 'https://i.imgur.com/IFjR25G.png',
-                },
-              ],
-            },
-            {
-              flex: 0,
-              size: '16px',
-              text: '分享',
-              type: 'text',
-            },
-          ],
-        },
+        icon: 'https://i.imgur.com/IFjR25G.png',
+        text: '分享',
+        action: { type: 'uri', uri },
       },
       {
-        size: 'nano',
-        type: 'bubble',
-        body: {
-          alignItems: 'center',
-          justifyContent: 'center',
-          layout: 'horizontal',
-          paddingAll: '5px',
-          spacing: 'md',
-          type: 'box',
-          action: {
-            data: '/gistReplaceAltText',
-            displayText: '如果你是在手機上點選「改替代」按鈕，你應該可以在下方輸入框看到自動填寫的文字指令，請在指令後面輸入新的替代文字後傳送。',
-            fillInText: `/gistReplaceAltText ${gistId} `,
-            inputOption: 'openKeyboard',
-            type: 'postback',
-          },
-          contents: [
-            {
-              height: '16px',
-              layout: 'vertical',
-              type: 'box',
-              width: '16px',
-              contents: [
-                {
-                  aspectMode: 'cover',
-                  aspectRatio: '1:1',
-                  size: 'full',
-                  type: 'image',
-                  url: 'https://i.imgur.com/dLElEk7.png',
-                },
-              ],
-            },
-            {
-              flex: 0,
-              size: '16px',
-              text: '改替代',
-              type: 'text',
-            },
-          ],
+        icon: 'https://i.imgur.com/W6RbIne.png',
+        text: '複製網址',
+        action: { type: 'clipboard', clipboardText: uri },
+      },
+      {
+        icon: 'https://i.imgur.com/dLElEk7.png',
+        text: '改替代',
+        action: {
+          data: '/gistReplaceAltText',
+          displayText: '如果你是在手機上點選「改替代」按鈕，你應該可以在下方輸入框看到自動填寫的文字指令，請在指令後面輸入新的替代文字後傳送。',
+          fillInText: `/gistReplaceAltText ${gistId} `,
+          inputOption: 'openKeyboard',
+          type: 'postback',
         },
       },
-    ],
+    ], btn => ({
+      size: 'nano',
+      type: 'bubble',
+      body: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        layout: 'horizontal',
+        paddingAll: '5px',
+        spacing: 'md',
+        type: 'box',
+        action: btn.action,
+        contents: [
+          {
+            height: '16px',
+            layout: 'vertical',
+            type: 'box',
+            width: '16px',
+            contents: [
+              {
+                aspectMode: 'cover',
+                aspectRatio: '1:1',
+                size: 'full',
+                type: 'image',
+                url: btn.icon,
+              },
+            ],
+          },
+          {
+            flex: 0,
+            size: '16px',
+            text: btn.text,
+            type: 'text',
+          },
+        ],
+      },
+    })),
   },
   sender: {
     iconUrl: 'https://i.imgur.com/1KZoSue.png',

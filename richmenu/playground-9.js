@@ -1,10 +1,10 @@
 const { httpBuildQuery } = require('../libs/helper')
 
-const RICHMENU_ALIAS = 'playground-6'
+const RICHMENU_ALIAS = 'playground-9'
 
 module.exports = {
   alias: RICHMENU_ALIAS,
-  image: 'https://i.imgur.com/lLaScoh.png',
+  image: 'https://i.imgur.com/FQTPA2J.png',
   metadata: {
     chatBarText: '點此打開圖文選單',
     selected: true,
@@ -21,7 +21,7 @@ module.exports = {
         bounds: { x: 2150, y: 0, width: 175, height: 208 },
         action: {
           type: 'uri',
-          uri: 'https://developers.line.biz/en/docs/messaging-api/try-rich-menu/#try-richmenu-switch-action',
+          uri: 'https://developers.line.biz/en/reference/messaging-api/#clipboard-action',
         },
       },
       { // 1. message
@@ -40,28 +40,19 @@ module.exports = {
           data: httpBuildQuery({ from: RICHMENU_ALIAS, to: 'playground-4' }),
         },
       },
-      { // 6. clipboard
-        bounds: { x: 1760, y: 208, width: 730, height: 245 },
-        action: {
-          type: 'richmenuswitch',
-          richMenuAliasId: 'playground-9',
-          data: httpBuildQuery({ from: RICHMENU_ALIAS, to: 'playground-9' }),
-        },
-      },
-      { // 換回綠色選單
-        bounds: { x: 0, y: 1100, width: 1250, height: 450 },
+      { // 5. 切換選單
+        bounds: { x: 1030, y: 208, width: 730, height: 245 },
         action: {
           type: 'richmenuswitch',
           richMenuAliasId: 'playground-5',
           data: httpBuildQuery({ from: RICHMENU_ALIAS, to: 'playground-5' }),
         },
       },
-      { // 換成小型選單
-        bounds: { x: 1250, y: 1100, width: 1250, height: 450 },
+      { // 複製文字
+        bounds: { x: 576, y: 1055, width: 1346, height: 494 },
         action: {
-          type: 'richmenuswitch',
-          richMenuAliasId: 'playground-7',
-          data: httpBuildQuery({ from: RICHMENU_ALIAS, to: 'playground-7' }),
+          type: 'clipboard',
+          clipboardText: '這是你從圖文選單遊樂場複製的文字',
         },
       },
     ],

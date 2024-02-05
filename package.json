@@ -8,11 +8,11 @@
   "dependencies": {
     "@google-cloud/functions-framework": "^3.3.0",
     "@josephg/resolvable": "^1.0.1",
-    "@line/bot-sdk": "^8.2.0",
-    "axios": "^1.6.3",
+    "@line/bot-sdk": "^8.4.0",
+    "axios": "^1.6.7",
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.10",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "json5": "^2.2.3",
     "lodash": "^4.17.21",
     "octokit": "^3.1.2",
@@ -22,7 +22,7 @@
     "eslint": "^8.56.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.6.1",
+    "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "jest": "^29.7.0"
