@@ -13,6 +13,7 @@ const lineEventHander = middlewareCompose([
 
 module.exports = async (ctx, next) => {
   const { req, res } = ctx
+  if (req.method !== 'POST' || _.isNil(req.get('x-line-signature'))) return await next()
   try {
     // 處理 access token
     const channelAccessToken = req.path.substring(1)

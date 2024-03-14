@@ -6,9 +6,10 @@ const { middlewareCompose } = require('./libs/helper')
 const functions = require('@google-cloud/functions-framework')
 
 const handlers = middlewareCompose([
-  require('./cors'),
+  require('./api/cors'),
   require('./api/index'),
   require('./line/handler/index'),
+  require('./api/notFound'),
 ])
 
 functions.http('main', async (req, res) => {
