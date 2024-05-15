@@ -20,7 +20,7 @@
 ## 詳細教學及相關連結
 
 1. 部落格介紹: https://taichunmin.idv.tw/blog/2020-04-06-line-devbot.html
-2. 投影片介紹: https://hackmd.io/@taichunmin/chatbot-tw-202005#/26
+2. 投影片介紹: https://hackmd.io/@taichunmin/COSCUP2022
 3. 原始碼: https://github.com/taichunmin/gcf-line-devbot
 
 ## LINE Simple Beacon 工作坊測試工具
