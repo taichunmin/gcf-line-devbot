@@ -8,6 +8,7 @@ const lineEventHander = middlewareCompose([
   require('./cmd'), // 處理指令
   require('./replyFlexFromText'), // 嘗試回傳 flex
   require('./noReplyUrl'), // 如果是一個合法的 URL 就不作回應
+  require('./replyCalc'), // 計算數學式
   require('./replyEventJson'), // 把事件用 json 回傳
 ])
 
