@@ -1,7 +1,6 @@
 const _ = require('lodash')
 const { log, sha1Base64url } = require('../libs/helper')
 const axios = require('axios')
-const resolvable = require('@josephg/resolvable')
 const fsPromises = require('fs').promises
 const path = require('path')
 
@@ -25,13 +24,10 @@ const RICHMENU_FILES = [
 
 exports.bootstrap = (() => {
   const cached = {}
-  return async (ctx, isForce = false) => {
-    // 避免重複執行
-    if (ctx.event?.deliveryContext?.isRedelivery === true) return // 重新送達的事件不處理 richmenu 更新
-    const line = ctx.line
-    if (line.richmenuReady) return await line.richmenuReady
-    line.richmenuReady = resolvable()
 
+  // 實際的更新流程，回傳 alias 對 richMenuId 的對照表
+  const refresh = async (ctx, isForce = false) => {
+    const line = ctx.line
     try {
       const channelAccessToken = line.config.channelAccessToken
       const botBasicId = (await line.getBotInfo())?.basicId
@@ -54,7 +50,7 @@ exports.bootstrap = (() => {
             const oldHash = oldIdToHash[oldId] ?? null
             if (!isForce && oldHash === menu.metadata.name) {
               menu.richMenuId = oldId
-              return
+              continue
             }
             // 上傳新的 richMenu
             menu.richMenuId = await line.createRichMenu(menu.metadata)
@@ -96,22 +92,26 @@ exports.bootstrap = (() => {
           expiredAt: nowts + 36e5, // 1hr
         }
       }
-      ctx.richmenus = cached[botBasicId].cache
-      line.richmenuReady.resolve(ctx)
-      return await line.richmenuReady
+      return cached[botBasicId].cache
     } catch (err) {
       log('ERROR', err)
-      line.richmenuReady.reject(err)
-    } finally {
-      line.richmenuReady = null
     }
+  }
+
+  return async (ctx, isForce = false) => {
+    if (ctx.event?.deliveryContext?.isRedelivery === true) return // 重新送達的事件不處理 richmenu 更新
+    const line = ctx.line
+    // 同一個 request 的多個 event 共用同一次更新，isForce 時才強制重跑
+    if (isForce || !line.richmenuReady) line.richmenuReady = refresh(ctx, isForce)
+    ctx.richmenus = await line.richmenuReady
+    return ctx
   }
 })()
 
 exports.loadMenus = async () => {
   const menus = []
   for (const filename of RICHMENU_FILES) {
-    const file = await fsPromises.readFile(path.resolve(__dirname, `${filename}.js`), { charset: 'utf8' })
+    const file = await fsPromises.readFile(path.resolve(__dirname, `${filename}.js`), { encoding: 'utf8' })
     const fileHash = sha1Base64url(file)
     const menu = require(`./${filename}`)
     const areas = menu?.metadata?.areas
